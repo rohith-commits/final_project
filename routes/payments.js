@@ -6,8 +6,10 @@ import bodyParser from 'body-parser'
 import crypto from 'crypto'
 import nodemailer from 'nodemailer'
 
+let data
 let paymentLinkId
-
+let email
+let number
 
 var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -16,6 +18,8 @@ var transporter = nodemailer.createTransport({
       pass: 'ppvz ojhr apmh xojj'
     }
   });
+
+
 
 var mailOptions = {
     from: 'rohithssiddeshwara@gmail.com',
@@ -27,7 +31,20 @@ var mailOptions = {
 
 router.use(bodyParser.json())
 
-// All routes here start with /v1
+
+router.post('/data',async (req, res) => {
+    email =await req.body.email;
+    number =await req.body.number;
+    
+    
+    res.send('Data received successfully.');
+});
+
+email? console.log('Email:', email): console.log('null')
+number? console.log('Number:', number): console.log('null')
+
+
+// All routes here start with /
 router.post('/v1/payment_links', async (req, res) => {
     try {
         const instance = new Razorpay({
@@ -36,14 +53,14 @@ router.post('/v1/payment_links', async (req, res) => {
         });
 
         const paymentLink = await instance.paymentLink.create({
-            amount: 500,
+            amount: 1000,
             currency: 'INR',
             accept_partial: true,
             first_min_partial_amount: 500,
             description: 'For XYZ purpose',
             customer: {
                 name: 'rohith',
-                email: 'rohithssiddeshwara@gmail.com',
+                email: email,
                 contact: '+918197134639'
             },
             notify: {
